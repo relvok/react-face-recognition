@@ -1,76 +1,73 @@
 import React, { useState, useEffect, useRef } from "react";
 import WebCam from "react-webcam";
+import { CircularProgress } from "@mui/material";
+import styles from "../styles/Home.module.css";
 
+//Our tensorflow library
 let ml5;
 
 export default function Home() {
+	const [loading, setLoading] = useState(true);
+
+	//React hook for accessing the DOM element
+	const webcamRef = useRef(null);
+
+	//Label to be predicted by our classifier
+	const [label, setLabel] = useState("");
+
+	//Teachable machine url after uploading your model
 	const modelURL = "https://teachablemachine.withgoogle.com/models/o67qKOlz-/";
 	let classifier;
+
 	const videoConstraints = {
 		width: 1280,
 		height: 720,
 		facingMode: "user",
 	};
 
+	//We're using asynchronous useEffect so we can wait for our classifier to be initialized before we attempt to use it
 	useEffect(() => {
-		ml5 = require("ml5");
+		ml5 = require("ml5"); //Workaround because of "window is not defined" error
 		(async () => {
 			classifier = await ml5.imageClassifier(modelURL + "model.json");
-			webcamRef.current.getScreenshot();
-			setTimeout(() => {
-				classifyVideo();
-			}, 2000);
+			classifyVideo();
 		})();
 	}, []);
 
-	const webcamRef = useRef(null);
-	const [label, setLabel] = useState("no one");
-
 	const classifyVideo = () => {
-		webcamRef.current.getScreenshot();
 		try {
-			if (webcamRef.current.canvas && classifier) {
-				classifier.classify(webcamRef.current, gotResults);
-			} else {
-				console.log("no ref yet");
-				setTimeout(() => {
-					classifyVideo();
-				}, 1000);
-			}
+			loading && setLoading(false);
+			//Get the classifications and pass it to callback function
+			classifier.classify(webcamRef.current.video, gotResults);
 		} catch (err) {
 			console.log(err.message);
 		}
 	};
 
 	const gotResults = async (error, results) => {
-		if (error) {
-			console.error(error.message);
-			return;
-		}
-		const label = results[0].label;
+		const label = results[0].label; //Predicted label
 		setLabel(label);
-		classifyVideo();
+		classifyVideo(); // Run on next webcam image
 	};
 
 	return (
-		<div
-			style={{
-				display: "flex",
-				flexDirection: "column",
-				alignContent: "center",
-			}}
-		>
-			<p style={{ fontSize: 50, alignSelf: "center" }}>{label}</p>
+		<div className={styles.main}>
+			{loading ? (
+				<CircularProgress style={{ marginTop: 200 }} />
+			) : (
+				<>
+					<p style={{ fontSize: 50 }}>{"Username: " + label}</p>
 
-			<WebCam
-				style={{ alignSelf: "center" }}
-				audio={false}
-				height={480}
-				ref={webcamRef}
-				screenshotFormat="image/jpeg"
-				width={720}
-				videoConstraints={videoConstraints}
-			/>
+					<WebCam
+						audio={false}
+						height={480}
+						ref={webcamRef}
+						screenshotFormat="image/jpeg"
+						width={720}
+						videoConstraints={videoConstraints}
+					/>
+				</>
+			)}
 		</div>
 	);
 }
