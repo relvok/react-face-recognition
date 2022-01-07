@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import WebCam from "react-webcam";
 import { CircularProgress } from "@mui/material";
 import styles from "../styles/Home.module.css";
-
+import Metatags from "../components/Metatags";
 //Our tensorflow library
 let ml5;
 
@@ -52,6 +52,7 @@ export default function Home() {
 
 	return (
 		<div className={styles.main}>
+			<Metatags />
 			{loading ? (
 				<CircularProgress style={{ marginTop: 200 }} />
 			) : (
