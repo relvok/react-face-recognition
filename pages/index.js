@@ -6,6 +6,10 @@ import styles from "../styles/Home.module.css";
 //Our tensorflow library
 let ml5;
 
+//Teachable machine url after uploading your model
+const modelURL = "https://teachablemachine.withgoogle.com/models/o67qKOlz-/";
+let classifier;
+
 export default function Home() {
 	const [loading, setLoading] = useState(true);
 
@@ -14,10 +18,6 @@ export default function Home() {
 
 	//Label to be predicted by our classifier
 	const [label, setLabel] = useState("");
-
-	//Teachable machine url after uploading your model
-	const modelURL = "https://teachablemachine.withgoogle.com/models/o67qKOlz-/";
-	let classifier;
 
 	const videoConstraints = {
 		width: 1280,
@@ -45,7 +45,7 @@ export default function Home() {
 	};
 
 	const gotResults = async (error, results) => {
-		const label = results[0].label; //Predicted label
+		const label = results[0].label; //Predicted label with highest confidence
 		setLabel(label);
 		classifyVideo(); // Run on next webcam image
 	};
@@ -56,7 +56,7 @@ export default function Home() {
 				<CircularProgress style={{ marginTop: 200 }} />
 			) : (
 				<>
-					<p style={{ fontSize: 50 }}>{"Username: " + label}</p>
+					<b style={{ fontSize: 50 }}>{"Username: " + label}</b>
 
 					<WebCam
 						audio={false}
