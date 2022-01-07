@@ -1,3 +1,8 @@
+Follow the link to read the full tutorial for this project
+
+https://medium.com/@relvok.tech/image-classification-with-react-the-simple-method-cf67d5b3ea9
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
