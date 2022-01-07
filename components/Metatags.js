@@ -3,7 +3,7 @@ import Head from "next/head";
 export default function Metatags({
 	title = "React face recognition demo",
 	description = "A simple React.js face recognition app",
-	image = "https://ibb.co/h8NQfrS",
+	image = "https://i.postimg.cc/rFk4Y8DX/react-tensorflow-combine.png",
 }) {
 	return (
 		<Head>
